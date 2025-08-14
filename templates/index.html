@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="card">
+  <h2>Find similar titles</h2>
+  <div class="form-row">
+    <input id="title-input" type="text" placeholder="Type a title..." autocomplete="off" />
+    <button id="go-btn">Recommend</button>
+  </div>
+  <ul id="suggestions" class="suggestions"></ul>
+
+  <div id="results" class="results"></div>
+</section>
+
+<script>
+const input = document.getElementById('title-input');
+const sugg = document.getElementById('suggestions');
+const results = document.getElementById('results');
+const goBtn = document.getElementById('go-btn');
+let timer;
+
+function debounce(fn, delay=200){
+  return function(...args){
+    clearTimeout(timer);
+    timer = setTimeout(()=>fn.apply(this,args), delay);
+  }
+}
+
+async function fetchSuggest(q){
+  if(!q){sugg.innerHTML='';return;}
+  const res = await fetch(`/api/suggest?q=${encodeURIComponent(q)}`);
+  const data = await res.json();
+  sugg.innerHTML = data.map(t=>`<li class="suggestion-item">${t}</li>`).join('');
+}
+
+input.addEventListener('input', debounce(e=>fetchSuggest(e.target.value), 150));
+
+sugg.addEventListener('click', (e)=>{
+  if(e.target && e.target.matches('li.suggestion-item')){
+    input.value = e.target.textContent;
+    sugg.innerHTML = '';
+  }
+});
+
+goBtn.addEventListener('click', async ()=>{
+  const title = input.value.trim();
+  if(!title){return;}
+  results.innerHTML = '<div class="loading">Finding recommendations...</div>';
+  const res = await fetch('/api/recommend',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({title, k: 10})
+  });
+  const data = await res.json();
+  if(data.error){
+    results.innerHTML = `<div class="error">${data.error}</div>`;
+    return;
+  }
+  results.innerHTML = renderResults(data.results);
+});
+
+function renderResults(items){
+  if(!items || !items.length){
+    return '<div class="empty">No similar titles found.</div>';
+  }
+  return `
+    <div class="grid">
+      ${items.map(item=>`
+        <div class="tile">
+          <div class="tile-title">${item.Title}</div>
+          <div class="meta">
+            <span>${item.ContentType}</span>
+            <span>${item.Language}</span>
+            <span>${item.AvailableGlobally}</span>
+          </div>
+          <div class="meta">Release: ${item.ReleaseYear}</div>
+          <div class="score">Similarity: ${item.Similarity?.toFixed ? item.Similarity.toFixed(3) : ''}</div>
+        </div>`).join('')}
+    </div>`;
+}
+</script>
+{% endblock %}
