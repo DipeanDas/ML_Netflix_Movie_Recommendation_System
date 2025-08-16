@@ -70,5 +70,27 @@ python app.py
 http://127.0.0.1:5000/
 
 ```
+## 🎯 Usage Example
 
+Example Query:<br>
 
+Input: wednesday<br>
+
+Output: Similar shows/movies based on metadata (language, year, popularity, etc.).<br>
+
+The recommendations are not random — they are based on metadata similarity, meaning the system suggests titles with similar language, release period, and audience engagement patterns.
+
+## 🔮 Future Improvements
+
+- Include genre-based similarity from NLP on movie descriptions
+
+- Add collaborative filtering using user ratings
+
+- Support multi-language search
+
+- Deploy the app to Heroku / Render
+
+## 👨‍💻 Author
+
+Dipean Dasgupta<br>
+Computer Science Graduate | EdgeAI & ML Enthusiast
