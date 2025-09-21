@@ -44,23 +44,17 @@ The system supports **retraining on new datasets** and provides a **Flask-based 
 git clone https://github.com/yourusername/Netflix_Movie_Recommendation_System.git
 cd Netflix_Movie_Recommendation_System
 ```
-### 2️⃣ Install Dependencies
-```
-pip install  -r requirements.txt
-
-```
-### 3️⃣ Prepare the Dataset
+### 2️⃣ Prepare the Dataset
 Place your dataset (CSV) inside the data/ folder.<br>
 Required Columns:<br>
 Title Available Globally? Release Date  Hours Viewed  Language Indicator  Content Type
-
-### 4️⃣ Retrain the Model (Optional)  
+### 3️⃣ Retrain the Model (Optional)  
 If you want to train on your dataset:<br>
 ```
 python train.py --input (datapath) --outdir ./models --neighbors 50(optional)
 
 ```
-###5️⃣ Run the Web App
+### 4️⃣  Run the Web App
 ```
 python app.py
 
@@ -70,6 +64,7 @@ python app.py
 http://127.0.0.1:5000/
 
 ```
+
 ## 🎯 Usage Example
 
 Example Query:<br>
